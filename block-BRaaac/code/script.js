@@ -34,6 +34,9 @@ function elm(type, attr = {}, children) {
   for (let key in attr) {
     if (key.startsWith('data-')) {
       element.setAttribute(key, attr[key]);
+    } else if (key.startsWith('on')) {
+      let eventType = key.replace('on', ' ').toLowerCase();
+      element.addEventListener(eventType, attr[key]);
     } else {
       element[key] = attr[key];
     }
@@ -54,14 +57,12 @@ function createUI(movies, root) {
   rootElm.innerHTML = ' ';
   movies.forEach((movie, id) => {
     let li = elm(
-      li,
-      {
-        classname: 'movie-list-item',
-      },
-      elm(span, {}, movie.name),
+      'li',
+      null,
+      elm('label', { for: id }, movie.name),
       ele(
         button,
-        { classname: 'btn', id: id, onclick: handleClick },
+        { id: id, onclick: handleClick },
         movie.watched ? 'Watched' : 'To Watch'
       )
     );
